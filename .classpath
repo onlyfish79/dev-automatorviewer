@@ -5,6 +5,6 @@
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="lib" path="libs/common-25.3.2.jar"/>
 	<classpathentry kind="lib" path="libs/ddmlib-25.3.2.jar"/>
-	<classpathentry kind="lib" path="libs/com.google.common_1.0.0.201004262004.jar"/>
+	<classpathentry kind="lib" path="libs/guava-18.0.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

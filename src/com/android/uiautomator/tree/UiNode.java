@@ -42,6 +42,28 @@ public class UiNode extends BasicTreeNode {
         return Collections.unmodifiableMap(mAttributes);
     }
 
+    //add by helen
+    private String getNodeClassAttribute() {
+  		return this.mAttributes.get("class");
+  	}
+    
+    public String getXpath()
+    {
+        String className=getNodeClassAttribute();
+        String xpath="//"+className;
+        String text = getAttribute("text");
+        if(text !=null&& !text.equals(""))
+        {
+            xpath += "[@text='"+text+"']";
+            return xpath;
+        }else 
+        {
+            return getAttribute("content-desc") !=""?
+                    xpath+"[@content-desc='"+getAttribute("content-desc")+"']"
+                    :xpath+"[@index='"+getAttribute("index")+"']";
+        }
+    }
+    
     /**
      * Builds the display name based on attributes of the node
      */

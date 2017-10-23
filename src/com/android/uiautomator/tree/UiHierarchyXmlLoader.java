@@ -36,6 +36,10 @@ public class UiHierarchyXmlLoader {
     private BasicTreeNode mRootNode;
     private List<Rectangle> mNafNodes;
     private List<BasicTreeNode> mNodeList;
+    
+    //add by helen
+    private UiNode mTmpNode ;
+    
     public UiHierarchyXmlLoader() {
     }
 
@@ -109,7 +113,14 @@ public class UiHierarchyXmlLoader {
                     }
                     if (mParentNode != null) {
                         mParentNode.addChild(mWorkingNode);
+                        //System.out.println(mNodeList.size());
+                        if(mWorkingNode.getParent()!=null){
+                        	String xpath = ((UiNode)mWorkingNode).getXpath();
+                        	((UiNode)mWorkingNode).addAtrribute("xpath",xpath);
+                        }
                         mNodeList.add(mWorkingNode);
+
+                        //System.out.println(mNodeList.size());
                     }
                 }
             }
