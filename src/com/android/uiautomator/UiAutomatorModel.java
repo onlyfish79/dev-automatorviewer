@@ -37,7 +37,7 @@ public class UiAutomatorModel {
     private List<Rectangle> mNafNodes;
 
     // determines whether we lookup the leaf UI node on mouse move of screenshot image
-    private boolean mExploreMode = true;
+    private boolean mExploreMode = true;  //by helen
 
     private boolean mShowNafNodes = false;
     private List<BasicTreeNode> mNodelist;
@@ -60,7 +60,7 @@ public class UiAutomatorModel {
         }
 
         mRootNode = rootNode;
-        mExploreMode = true;
+        mExploreMode = true;   //by helen
         mNodelist = loader.getAllNodes();
     }
 
@@ -82,6 +82,10 @@ public class UiAutomatorModel {
         mSelectedNode = node;
         if (mSelectedNode instanceof UiNode) {
             UiNode uiNode = (UiNode) mSelectedNode;
+            //每次鼠标落在该区域，才会触发该函数，才会显示如下日志
+//            String xpathValue = uiNode.getAttribute("xpath");
+//            System.out.println("RectangleInfo: " + xpathValue +", x: " + uiNode.x + ", y: " + uiNode.y 
+//            		+ ", width: " + uiNode.width + ", height: " + uiNode.height);
             mCurrentDrawingRect = new Rectangle(uiNode.x, uiNode.y, uiNode.width, uiNode.height);
         } else {
             mCurrentDrawingRect = null;

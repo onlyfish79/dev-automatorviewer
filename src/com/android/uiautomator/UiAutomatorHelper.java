@@ -126,21 +126,37 @@ public class UiAutomatorHelper {
         File xmlDumpFile = null;
         File screenshotFile = null;
         try {
-            tmpDir = File.createTempFile("uiautomatorviewer_", "");
-            tmpDir.delete();
-            if (!tmpDir.mkdirs())
-                throw new IOException("Failed to mkdir");
-            xmlDumpFile = File.createTempFile("dump_", ".uix", tmpDir);
-            screenshotFile = File.createTempFile("screenshot_", ".png", tmpDir);
+//            tmpDir = File.createTempFile("uiautomatorviewer_", "");
+        	tmpDir = new File("/tmp/uiautomatorviewer");
+        	try{
+        		if(tmpDir.exists() == false) {
+        			System.out.println("*****create diretory: " + tmpDir.getAbsolutePath());
+        		    tmpDir.mkdir();
+        		}else {
+        			System.out.println("*****" + tmpDir.getAbsolutePath() + " has exist..");
+        		}
+            }  
+            catch(SecurityException se){
+                //handle it 
+            }
+//            tmpDir.delete();
+//            if (!tmpDir.mkdirs())
+//                throw new IOException("Failed to mkdir");
+//            xmlDumpFile = File.createTempFile("dump_", ".uix", tmpDir);
+//            screenshotFile = File.createTempFile("screenshot_", ".png", tmpDir);
+            String xmlFilePath = tmpDir + File.separator + "dump.uix";
+            xmlDumpFile = new File(xmlFilePath);
+            String screenFilePath = tmpDir + File.separator + "screenshot.png";
+            screenshotFile = new File(screenFilePath);
         } catch (Exception e) {
             String msg = "Error while creating temporary file to save snapshot: "
                     + e.getMessage();
             throw new UiAutomatorException(msg, e);
         }
 
-        tmpDir.deleteOnExit();
-        xmlDumpFile.deleteOnExit();
-        screenshotFile.deleteOnExit();
+//        tmpDir.deleteOnExit();
+//        xmlDumpFile.deleteOnExit();
+//        screenshotFile.deleteOnExit();
 
         monitor.subTask("Obtaining UI hierarchy");
         try {

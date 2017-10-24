@@ -16,17 +16,23 @@
 
 package com.android.uiautomator.tree;
 
+import org.eclipse.swt.graphics.Image;
 import org.eclipse.swt.graphics.Rectangle;
+import org.eclipse.swt.widgets.Display;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import java.awt.Graphics2D;
+import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import javax.imageio.ImageIO;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -36,11 +42,18 @@ public class UiHierarchyXmlLoader {
     private BasicTreeNode mRootNode;
     private List<Rectangle> mNafNodes;
     private List<BasicTreeNode> mNodeList;
-    
+    private static int  index = 0;
+    private File sScreenshotFile = new File("/tmp/uiautomatorviewer/screenshot.png");
+    private BufferedImage screenShot;
     //add by helen
     private UiNode mTmpNode ;
     
     public UiHierarchyXmlLoader() {
+    	try {
+    	    screenShot = ImageIO.read(sScreenshotFile);
+    	}catch(IOException e) {
+    		
+    	}
     }
 
     /**
@@ -73,11 +86,13 @@ public class UiHierarchyXmlLoader {
             @Override
             public void startElement(String uri, String localName, String qName,
                     Attributes attributes) throws SAXException {
+            	
                 boolean nodeCreated = false;
                 // starting an element implies that the element that has not yet been closed
                 // will be the parent of the element that is being started here
                 mParentNode = mWorkingNode;
                 if ("hierarchy".equals(qName)) {
+                	System.out.println("*****UiNode, hierarchy, can screenshot...");
                     int rotation = 0;
                     for (int i = 0; i < attributes.getLength(); i++) {
                         if ("rotation".equals(attributes.getQName(i))) {
@@ -92,16 +107,42 @@ public class UiHierarchyXmlLoader {
                     nodeCreated = true;
                 } else if ("node".equals(qName)) {
                     UiNode tmpNode = new UiNode();
-                    for (int i = 0; i < attributes.getLength(); i++) {
-                        tmpNode.addAtrribute(attributes.getQName(i), attributes.getValue(i));
-                    }
-                    mWorkingNode = tmpNode;
-                    nodeCreated = true;
-                    // check if current node is NAF
-                    String naf = tmpNode.getAttribute("NAF");
-                    if ("true".equals(naf)) {
-                        mNafNodes.add(new Rectangle(tmpNode.x, tmpNode.y,
-                                tmpNode.width, tmpNode.height));
+                    String classValue = attributes.getValue("class");
+//                    if (classValue.equals("android.widget.TextView") == false){
+                    if (1==1) { 
+	                    for (int i = 0; i < attributes.getLength(); i++) {
+	                    	String keyValue = attributes.getQName(i);
+//	                    	System.out.println("***print attributes values: " + classValue);
+	                        tmpNode.addAtrribute(attributes.getQName(i), attributes.getValue(i));
+	                        
+	                    	if (keyValue.equals("bounds") && tmpNode.width > 0 && tmpNode.height > 0) {
+	                    	    index += 1;
+		                        if(sScreenshotFile.exists()) {
+			                    	try {		  
+			                    		System.out.println("tmpNode keyValue: " + keyValue + ", tmpNode xpath:" + tmpNode.getXpath() + ", tmpNode x: " + 
+			                    	tmpNode.x + ", y: " + tmpNode.y + ", width: " + tmpNode.width + ", height: " + tmpNode.height);     
+			                        	BufferedImage dest = screenShot.getSubimage(tmpNode.x, tmpNode.y, tmpNode.width, tmpNode.height);
+			                        	String dstFilePath = "/tmp/uiautomatorviewer/dst-"+index+".png";
+			                    		System.out.println("UiNode, node, can screenshot, save filePath: " + dstFilePath);
+			                        	File outputfile = new File(dstFilePath);
+			                        	ImageIO.write(dest, "PNG", outputfile);
+			                    	}catch(IOException e) {
+			                    		e.printStackTrace();
+			                    	}
+
+		                        }else {
+		                        	System.out.println(sScreenshotFile.getAbsolutePath() + " not exist....");
+		                        }
+	                    	}
+	                    }
+	                    mWorkingNode = tmpNode;
+	                    nodeCreated = true;
+	                    // check if current node is NAF
+	                    String naf = tmpNode.getAttribute("NAF");
+	                    if ("true".equals(naf)) {
+	                        mNafNodes.add(new Rectangle(tmpNode.x, tmpNode.y,
+	                                tmpNode.width, tmpNode.height));
+	                    }
                     }
                 }
                 // nodeCreated will be false if the element started is neither

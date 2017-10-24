@@ -31,7 +31,11 @@ public class UiNode extends BasicTreeNode {
     private Object[] mCachedAttributesArray;
 
     public void addAtrribute(String key, String value) {
+//        if (key.equals("class")){
+//        	System.out.println("add atrribute: key: " + key + ", value: " + value);
+//        }
         mAttributes.put(key, value);
+
         updateDisplayName();
         if ("bounds".equals(key)) {
             updateBounds(value);
